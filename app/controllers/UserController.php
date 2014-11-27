@@ -2,8 +2,13 @@
 
 class UserController extends BaseController {
 
+    public function __construct(User $user) {
+        $this->user = $user;
+    }
+
     public function index() {
-        return View::make('user.index');
+        $users = User::all();
+        return View::make('user.index', ['users' => $users]);
     }
 
     public function create() {
@@ -11,15 +16,24 @@ class UserController extends BaseController {
     }
 
     public function store() {
-        return 'code to store user';
+        $input = Input::all();
+        if (!$this->user->fill($input)->isValid()) {
+            return Redirect::back()->withInput()->withErrors($this->user->errors);
+        }
+        $this->user->save();
+        return Redirect::route('user.index');
     }
 
     public function edit() {
-        return 'launch edit page';
+        return View::make('user.edit');
     }
 
     public function update() {
         return 'update user\'s detail';
+    }
+
+    public function show() {
+        return 'show user\'s detail';
     }
 
     public function destroy() {
