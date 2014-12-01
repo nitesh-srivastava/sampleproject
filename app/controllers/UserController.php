@@ -9,6 +9,9 @@ class UserController extends BaseController {
     }
 
     public function index() {
+        if (!Auth::check()) {
+            return Redirect::to('/')->with('password', 'Please login to access View feature');
+        }
         $users = User::all();
         $data['sidebar1'] = View::make('partials.sidebar1');
         return View::make('user.index', ['users' => $users, 'data' => $data]);
@@ -39,11 +42,17 @@ class UserController extends BaseController {
     }
 
     public function edit($username) {
+        if (!Auth::check()) {
+            return Redirect::to('/')->with('password', 'Please login to edit detail');
+        }
         $user = User::whereUsername($username)->first();
         return View::make('user.create', ['user' => $user, 'method' => 'put']);
     }
 
     public function update() {
+        if (!Auth::check()) {
+            return Redirect::to('/')->with('password', 'Please login to update user\'s detail');
+        }
         $validation = Validator::make(Input::all(), ['username' => 'required', 'email' => 'required', 'contact' => 'required']);
         if ($validation->fails()) {
             return Redirect::back()->withInput()->withErrors($validation->errors);
@@ -64,6 +73,9 @@ class UserController extends BaseController {
     }
 
     public function show($username) {
+        if (!Auth::check()) {
+            return Redirect::to('/')->with('password', 'Please login to check user\'s detail');
+        }
         $user = User::whereUsername($username)->first();
         return View::make('user.detail', ['user' => $user]);
     }
@@ -79,15 +91,10 @@ class UserController extends BaseController {
 
         if ($validation->passes()) {
             if (Auth::attempt($credentials)) {
+                var_dump('logged in');
                 return Redirect::intended('user');
             } else {
                 return Redirect::to('/')->with('password', 'Invalid Credentials');
-            }
-            if (Auth::check()) {
-                var_dump(Auth::check());
-                dd('logged in');
-            } else {
-                dd('bad request');
             }
         } else {
             return Redirect::back()->withErrors($validation->messages());
