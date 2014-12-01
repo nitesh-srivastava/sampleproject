@@ -8,11 +8,12 @@ class UserController extends BaseController {
 
     public function index() {
         $users = User::all();
-        return View::make('user.index', ['users' => $users]);
+        $data['sidebar1'] = View::make('partials.sidebar1'); 
+        return View::make('user.index', ['users' => $users,'data'=>$data]);
     }
 
     public function create() {
-        return View::make('user.create');
+        return View::make('user.create', ['method' => 'post']);
     }
 
     public function store() {
@@ -20,20 +21,43 @@ class UserController extends BaseController {
         if (!$this->user->fill($input)->isValid()) {
             return Redirect::back()->withInput()->withErrors($this->user->errors);
         }
-        $this->user->save();
+        $checkExistingRecord = User::whereEmail($this->user->email)->first();
+        if (empty($checkExistingRecord)) {
+            $this->user->save();
+        } else {
+            
+        }
         return Redirect::route('user.index');
     }
 
-    public function edit() {
-        return View::make('user.edit');
+    public function edit($username) {
+        $user = User::whereUsername($username)->first();
+        return View::make('user.create', ['user' => $user, 'method' => 'put']);
     }
 
     public function update() {
-        return 'update user\'s detail';
+        $input = Input::all();
+        if (!$this->user->fill($input)->isValid()) {
+            return Redirect::back()->withInput()->withErrors($this->user->errors);
+        }
+        $user = User::find(Input::get('_id'));
+        if (!empty($user)) {
+            $checkExistingRecord = User::whereEmail($this->user->email)->first();
+            if (empty($checkExistingRecord) || ($this->user->email == $user->email) ) {
+                $user->username = $this->user->username;
+                $user->email = $this->user->email;
+                $user->contact = $this->user->contact;
+                $user->save();
+            } else {
+                
+            }
+        }
+        return Redirect::route('user.index');
     }
 
-    public function show() {
-        return 'show user\'s detail';
+    public function show($username) {
+        $user = User::whereUsername($username)->first();
+        return View::make('user.detail', ['user' => $user]);
     }
 
     public function destroy() {
