@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration {
             $table->string('email')->unique();
             $table->string('contact', 20);
             $table->boolean('is_employe')->default(0);
-            $table->string('remember_token',100);
+            $table->rememberToken();
             $table->timestamps();
         });
     }
