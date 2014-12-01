@@ -30,8 +30,6 @@ class UserController extends BaseController {
             $user->email = Input::get('email');
             $user->contact = Input::get('contact');
             $user->is_employe = 0;
-            $salt = WebHelper::saltGenerator(6);
-            $user->salt = $salt;
             $user->password = Hash::make(Input::get('password'));
             $user->save();
         } else {

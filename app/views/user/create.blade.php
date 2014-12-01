@@ -67,7 +67,7 @@
     </div>
     <div class="form-group">
         <div class="row">
-            <div class="col-xs-12 text-center">
+            <div class="col-xs-2 col-xs-offset-3 text-center">
                 {{ ($method == "put") ? Form::submit('Update Detail') :Form::submit('Register user') }}
             </div>
         </div>
