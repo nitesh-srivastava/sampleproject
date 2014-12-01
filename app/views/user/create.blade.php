@@ -3,12 +3,21 @@
 <div class="alert alert-info" role="alert">
     {{ ($method == "put")? 'Update user\'s detail':'Register New User'}}
 </div>
+
+@if(Session::get('registrationError'))
+<div class="alert alert-danger alert-dismissible text-center" role="alert">
+    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <strong> {{ Session::get('registrationError')}}</strong>
+</div>
+@endif
 <div class='col-xs-6'>
 
     @if($method == "put")
     {{ Form::open(array('route'=> 'user.update','method'=>'put')) }}
     {{ Form::Input('hidden','_id',$user->id) }}
     @else
+
+
     {{ Form::open(array('route'=> 'user.store','method'=>'post')) }}
     @endif
     <div class="form-group">
@@ -22,10 +31,11 @@
             <div class="col-xs-5">
                 {{ $errors->first('username','<span class="text-danger line-height-30">:message</span>') }}
             </div>
-            
+
 
         </div>
     </div>
+    @if($method != "put")
     <div class="form-group">
         <div class="row">
             <div class="col-xs-2 text-right">
@@ -39,6 +49,7 @@
             </div>
         </div>
     </div>
+    @endif
     <div class="form-group">
         <div class="row">
             <div class="col-xs-2 text-right">

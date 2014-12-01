@@ -33,7 +33,7 @@ class UserController extends BaseController {
             $user->password = Hash::make(Input::get('password'));
             $user->save();
         } else {
-            dd('unable to save user');
+            return Redirect::back()->withInput()->with('registrationError', 'This email is already registered');
         }
         return Redirect::route('user.index');
     }
@@ -44,20 +44,20 @@ class UserController extends BaseController {
     }
 
     public function update() {
-        $input = Input::all();
-        if (!$this->user->fill($input)->isValid()) {
-            return Redirect::back()->withInput()->withErrors($this->user->errors);
+        $validation = Validator::make(Input::all(), ['username' => 'required', 'email' => 'required', 'contact' => 'required']);
+        if ($validation->fails()) {
+            return Redirect::back()->withInput()->withErrors($validation->errors);
         }
         $user = User::find(Input::get('_id'));
         if (!empty($user)) {
-            $checkExistingRecord = User::whereEmail($this->user->email)->first();
-            if (empty($checkExistingRecord) || ($this->user->email == $user->email)) {
-                $user->username = $this->user->username;
-                $user->email = $this->user->email;
-                $user->contact = $this->user->contact;
+            $checkExistingRecord = User::whereEmail(Input::get('email'))->first();
+            if (empty($checkExistingRecord) || (Input::get('email') == $user->email)) {
+                $user->username = Input::get('username');
+                $user->email = Input::get('email');
+                $user->contact = Input::get('contact');
                 $user->save();
             } else {
-                
+                return Redirect::back()->withInput()->with('registrationError', 'This email is already linked with anyother user');
             }
         }
         return Redirect::route('user.index');
@@ -81,10 +81,10 @@ class UserController extends BaseController {
             if (Auth::attempt($credentials)) {
                 return Redirect::intended('user');
             } else {
-               return Redirect::to('/')->with('password', 'Invalid Credentials');
+                return Redirect::to('/')->with('password', 'Invalid Credentials');
             }
             if (Auth::check()) {
-                var_dump (Auth::check());
+                var_dump(Auth::check());
                 dd('logged in');
             } else {
                 dd('bad request');
