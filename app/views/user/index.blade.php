@@ -7,9 +7,11 @@
 <div class="row">
     <div class="col-xs-4">
         <div class="list-group">
-            @foreach ($users as $user)
+            @forelse($users as $user)
             <li class='list-group-item'>{{ link_to("/user/{$user->username }",$user->username) }}<span class="pull-right"><a href="/user/{{$user->username }}/edit"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a></span></li>
-            @endforeach
+            @empty
+            <p>No users</p>
+            @endforelse
         </div>
     </div>
     <div class='col-xs-4'>

@@ -3,13 +3,15 @@
 class UserController extends BaseController {
 
     public function __construct(User $user) {
+        $this->beforeFilter('csrf', array('on' => 'post'));
+        $this->beforeFilter('csrf', array('on' => 'put'));
         $this->user = $user;
     }
 
     public function index() {
         $users = User::all();
-        $data['sidebar1'] = View::make('partials.sidebar1'); 
-        return View::make('user.index', ['users' => $users,'data'=>$data]);
+        $data['sidebar1'] = View::make('partials.sidebar1');
+        return View::make('user.index', ['users' => $users, 'data' => $data]);
     }
 
     public function create() {
@@ -23,9 +25,17 @@ class UserController extends BaseController {
         }
         $checkExistingRecord = User::whereEmail($this->user->email)->first();
         if (empty($checkExistingRecord)) {
-            $this->user->save();
+            $user = new User();
+            $user->username = Input::get('username');
+            $user->email = Input::get('email');
+            $user->contact = Input::get('contact');
+            $user->is_employe = 0;
+            $salt = WebHelper::saltGenerator(6);
+            $user->salt = $salt;
+            $user->password = Hash::make(Input::get('password'));
+            $user->save();
         } else {
-            
+            dd('unable to save user');
         }
         return Redirect::route('user.index');
     }
@@ -43,7 +53,7 @@ class UserController extends BaseController {
         $user = User::find(Input::get('_id'));
         if (!empty($user)) {
             $checkExistingRecord = User::whereEmail($this->user->email)->first();
-            if (empty($checkExistingRecord) || ($this->user->email == $user->email) ) {
+            if (empty($checkExistingRecord) || ($this->user->email == $user->email)) {
                 $user->username = $this->user->username;
                 $user->email = $this->user->email;
                 $user->contact = $this->user->contact;
@@ -62,6 +72,30 @@ class UserController extends BaseController {
 
     public function destroy() {
         return 'delete user';
+    }
+
+    public function login() {
+        $input = Input::all();
+        $validation = Validator::make($input, User::$loginRules);
+        $credentials = array('email' => $input['email'], 'password' => $input['password']);
+
+        if ($validation->passes()) {
+            if (Auth::attempt($credentials)) {
+                return Redirect::intended('user');
+            } else {
+               return Redirect::to('/')->with('password', 'Invalid Credentials');
+            }
+            if (Auth::check()) {
+                var_dump (Auth::check());
+                dd('logged in');
+            } else {
+                dd('bad request');
+            }
+        } else {
+            return Redirect::back()->withErrors($validation->messages());
+        }
+
+        return 'performs login task';
     }
 
 }

@@ -39,8 +39,6 @@
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="/user/">View Users</a></li>
                                 <li><a href="/user/create">Register User</a></li>
-                                <li><a href="#">Modify User Detail</a></li>
-                                <li><a href="#">Delete User</a></li>
                             </ul>
                         </li>
                     </ul>

@@ -10,11 +10,17 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     use UserTrait,
         RemindableTrait;
 
-    protected $fillable = ['username', 'email', 'contact'];
+    protected $fillable = ['username', 'email', 'contact','password'];
     public static $rules = [
         'username' => 'required',
         'email' => 'required',
-        'contact' => 'required'
+        'contact' => 'required',
+        'password'=> 'required'
+    ];
+    
+    public static $loginRules = [
+        'email' => 'required',
+        'password'=> 'required'
     ];
     public $errors;
 

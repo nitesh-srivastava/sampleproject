@@ -19,4 +19,7 @@ Route::get('about', function() {
     return View::make('pages.about');
 });
 
+//for login
+Route::post('login', array('as' => 'user.login', 'uses' => 'UserController@login'));
+
 Route::resource('user', 'UserController');

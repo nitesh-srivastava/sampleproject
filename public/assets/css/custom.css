@@ -37,3 +37,11 @@ body {
 .line-height-30{
     line-height: 30px;
 }
+
+.login-outer-container{
+    border: 1px solid #ddd;
+    background-color: #efefef;
+}
+.margin-top-small{
+    margin-top: 20px;
+}

@@ -29,6 +29,19 @@
     <div class="form-group">
         <div class="row">
             <div class="col-xs-2 text-right">
+                {{ Form::label('password','Password:' , $attributes = ['class' => 'line-height-30']) }}
+            </div>
+            <div class="col-xs-5">
+                {{ Form::password('password',$attributes = ['class' => 'form-control','placeholder' => 'Enter Password']) }}
+            </div>
+            <div class="col-xs-5">
+                {{ $errors->first('password','<span class="text-danger line-height-30">:message</span>') }}
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-2 text-right">
                 {{ Form::label('email','Email:' , $attributes = ['class' => 'line-height-30']) }}
             </div>
             <div class="col-xs-5">
